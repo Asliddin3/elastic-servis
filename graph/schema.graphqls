@@ -28,7 +28,6 @@ type Query{
   polls: [Poll!]!
 }
 input NewChoice {
-  id: ID!
   name: String!
 }
 

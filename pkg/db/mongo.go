@@ -1,49 +1,14 @@
-package database
+package db
 
 import (
-    "time"
-    "fmt"
-    "context"
-    "log"
+	"context"
+	"fmt"
 
-
-    "go.mongodb.org/mongo-driver/bson"
-    "go.mongodb.org/mongo-driver/mongo/readpref"
-    "go.mongodb.org/mongo-driver/mongo"
-    "go-graphql-mongodb-api/graph/model"
-    "go.mongodb.org/mongo-driver/mongo/options"
-    "go.mongodb.org/mongo-driver/bson/primitive"
-
+	"github.com/Asliddin3/poll-servis/config"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type DB struct {
-	client *mongo.Client
-}
-
-func Connect(dbUrl string) *DB {
-	client, err := mongo.NewClient(options.Client().ApplyURI(dbUrl))
-	if err != nil {
-			log.Fatal(err)
-	}
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-	err = client.Connect(ctx)
-	if err != nil {
-			log.Fatal(err)
-	}
-	err = client.Ping(ctx, readpref.Primary())
-	if err != nil {
-			log.Fatal(err)
-	}
-
-	ctx, cancel = context.WithTimeout(context.Background(), 2*time.Second)
-	defer cancel()
-	err = client.Ping(ctx, readpref.Primary())
-	if err != nil {
-			log.Fatal(err)
-	}
-
-	return &DB{
-	client: client,
-	}
+func ConnectToDb(cfg *config.Config) (*mongo.Client, error) {
+	return mongo.Connect(context.Background(), options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%d", &cfg.MONGOHost, &cfg.MONGOPort)))
 }

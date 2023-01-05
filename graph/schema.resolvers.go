@@ -7,12 +7,14 @@ package graph
 import (
 	"context"
 	"fmt"
-	"template/voice-servis/graph/model"
+
+	"github.com/Asliddin3/poll-servis/graph/model"
 )
 
 // CreatePoll is the resolver for the CreatePoll field.
 func (r *mutationResolver) CreatePoll(ctx context.Context, input *model.NewPoll) (*model.Poll, error) {
-	panic(fmt.Errorf("not implemented: CreatePoll - CreatePoll"))
+	return r.service.Storage.Poll().CreatePoll(input)
+
 }
 
 // ChoiceFromPoll is the resolver for the ChoiceFromPoll field.

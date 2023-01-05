@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"sync"
 	"sync/atomic"
-	"template/voice-servis/graph/model"
+	"github.com/Asliddin3/poll-servis/graph/model"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
