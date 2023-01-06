@@ -8,27 +8,26 @@ type Choice struct {
 }
 
 type NewChoice struct {
-	ID   string `json:"id"`
 	Name string `json:"name"`
 }
 
 type NewPoll struct {
-	Text      string       `json:"text"`
-	UserEmail string       `json:"userEmail"`
-	Choises   []*NewChoice `json:"choises"`
+	Text    string       `json:"text"`
+	Email   string       `json:"email"`
+	Choises []*NewChoice `json:"choises"`
 }
 
 type Poll struct {
-	ID        string        `json:"id"`
-	UserEmail string        `json:"userEmail"`
-	Text      string        `json:"text"`
-	Choises   []*Choice     `json:"choises"`
-	Results   []*PollResult `json:"results"`
+	ID      string        `json:"id"`
+	Email   string        `json:"email"`
+	Text    string        `json:"text"`
+	Choises []*Choice     `json:"choises"`
+	Results []*PollResult `json:"results"`
 }
 
 type PollResult struct {
-	ChoiceID  string `json:"choiceId"`
-	UserEmail string `json:"userEmail"`
+	Choiceid string `json:"choiceid"`
+	Email    string `json:"email"`
 }
 
 type UserChoice struct {

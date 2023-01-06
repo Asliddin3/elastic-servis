@@ -15,14 +15,17 @@ import (
 )
 
 type Resolver struct {
-	service *service.PollService
+	Service *service.PollService
 }
 
-func (r *Resolver) Connect(cfg *config.Config) *service.PollService {
+func Connect(cfg *config.Config) *service.PollService {
 	l := logger.New(cfg.LogLevel)
 	con, err := db.ConnectToDb(cfg)
+	fmt.Println("-------con", err)
 	if err != nil {
-		l.Fatal(fmt.Errorf("error connecting to mongo in resolver", err.Error()))
+		var someErr error
+		fmt.Errorf("error connecting to mongo in resolver", someErr)
+		l.Fatal(someErr, err.Error())
 	}
 	pollService := service.NewPollService(l, con)
 	return pollService

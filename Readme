@@ -1,0 +1,20 @@
+Example request 
+
+mutation CreatePoll {
+  CreatePoll(
+    input: {
+      text:"Some question"
+      userEmail: "asliddindeh@mail.ru"
+      choises: [{
+        name: "addd"
+      }]
+    }){
+    id
+    text
+    choises{
+      id
+      name
+    }
+  }
+}
+

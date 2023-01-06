@@ -2,6 +2,7 @@ package mongo
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/Asliddin3/poll-servis/graph/model"
@@ -26,39 +27,99 @@ func (db *PollRepo) CreatePoll(pollReq *model.NewPoll) (*model.Poll, error) {
 	defer cancel()
 	poll := model.Poll{}
 	poll.ID = uuid.New().String()
-	_, err := collection.InsertOne(ctx, bson.D{
-		{Key: "id", Value: poll.ID},
-		{Key: "email", Value: &pollReq.UserEmail},
-		{Key: "text", Value: &pollReq.Text},
-		{Key: "choises", Value: &pollReq.Choises},
-	})
 	for _, val := range pollReq.Choises {
 		poll.Choises = append(poll.Choises, &model.Choice{
-			ID:   val.ID,
+			ID:   uuid.New().String(),
 			Name: val.Name,
 		})
 	}
-	if err != nil {
-		return &model.Poll{}, err
-	}
+	_, err := collection.InsertOne(ctx, bson.D{
+		{Key: "id", Value: poll.ID},
+		{Key: "email", Value: &pollReq.Email},
+		{Key: "text", Value: &pollReq.Text},
+		{Key: "choises", Value: &poll.Choises},
+		{Key: "results", Value: make(map[string]string)},
+	})
+	fmt.Println("in createPoll mongo func", err)
+	poll.Text = pollReq.Text
+	poll.Email = pollReq.Email
+	fmt.Println("after for mongo func")
 	return &poll, nil
+}
+
+type ObjectForDecode struct {
+	id      string
+	email   string
+	text    string
+	choises Choises
+	results []Result
+}
+type Result struct {
+	email    string
+	choiceid string
+}
+type Choises struct {
+	email    string
+	choiceid string
 }
 
 func (db *PollRepo) ChoiceFromPoll(choiceReq *model.UserChoice) (*model.Poll, error) {
 	collection := db.Db.Database("poll_service").Collection("polls")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	params := make(map[string]string)
+	params["choiceid"] = choiceReq.ChoiceID
+	params["email"] = choiceReq.UserEmail
+	// model.PollResult{}
+	filterSearch := bson.D{{Key: "id", Value: choiceReq.PollID}}
+	// update := bson.D{{"$push", bson.D{{"results", params}}}}
 	defer cancel()
-	poll := &model.Poll{}
-	_, err := collection.UpdateOne(ctx, choiceReq.PollID, bson.D{
-		{"$push", bson.M{"results": bson.M{"choiceid": &choiceReq.ChoiceID, "email": &choiceReq.UserEmail}}},
+	var poll model.Poll
+	_, err := collection.UpdateOne(ctx, filterSearch, bson.D{
+		{Key: "$push", Value: bson.M{"resutls": bson.M{"choiceid": choiceReq.ChoiceID, "email": choiceReq.UserEmail}}},
+		// update[0],
+		//  {Key: "$push", Value:bson.D{"results": bson.D{"choiceid", &choiceReq.UserEmail}}},
 	})
+	fmt.Println("first quiery err", err)
 	if err != nil {
 		return &model.Poll{}, err
 	}
 	filter := bson.D{{"id", &choiceReq.PollID}}
+	testObj := &ObjectForDecode{}
 	err = collection.FindOne(ctx, filter).Decode(&poll)
+	fmt.Println("sercond quiery err", err)
+	fmt.Println(testObj)
+
 	if err != nil {
 		return &model.Poll{}, err
+	}
+	return &poll, nil
+}
+func (db *PollRepo) GetPoll(id *string) (*model.Poll, error) {
+	collection := db.Db.Database("poll_service").Collection("polls")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	poll := &model.Poll{}
+	filter := bson.D{{"id", &id}}
+	err := collection.FindOne(ctx, filter).Decode(poll)
+	if err != nil {
+		return &model.Poll{}, err
+	}
+	return poll, nil
+}
+
+func (db *PollRepo) GetPolls() ([]*model.Poll, error) {
+	collection := db.Db.Database("poll_service").Collection("polls")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	poll := []*model.Poll{}
+	filter := bson.D{}
+	res, err := collection.Find(ctx, filter)
+	if err != nil {
+		return []*model.Poll{}, err
+	}
+	err = res.Decode(poll)
+	if err != nil {
+		return []*model.Poll{}, err
 	}
 	return poll, nil
 }

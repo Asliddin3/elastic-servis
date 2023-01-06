@@ -10,5 +10,5 @@ import (
 )
 
 func ConnectToDb(cfg *config.Config) (*mongo.Client, error) {
-	return mongo.Connect(context.Background(), options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%d", &cfg.MONGOHost, &cfg.MONGOPort)))
+	return mongo.Connect(context.Background(), options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%s", cfg.MONGOHost, cfg.MONGOPort)))
 }

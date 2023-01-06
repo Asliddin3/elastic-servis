@@ -9,14 +9,14 @@ schema {
 
 type Poll {
   id: ID!
-  userEmail: String!
+  email: String!
   text: String!
   choises: [Choice!]!
   results: [PollResult!]
 }
 type PollResult {
-  choiceId: ID!
-  userEmail: String!
+  choiceid: ID!
+  email: String!
 }
 
 type Choice {
@@ -33,7 +33,7 @@ input NewChoice {
 
 input NewPoll {
   text: String!
-  userEmail: String!
+  email: String!
   choises: [NewChoice!]!
 }
 
@@ -43,24 +43,6 @@ input UserChoice{
   userEmail: String!
 }
 
-
-# query GetPollResult($pollId: PollId!){
-#   poll(id: $id){
-#     text
-#     results
-#   }
-# }
-
-# mutation CreatePoll($poll: NewPoll!){
-#   createPoll(pollInput: $poll){
-#     Poll
-#   }
-# }
-# mutation ChoiceFromPoll($userChoice: PollResult){
-#   addUserChoice(userInput: userChoice){
-#     Poll
-#   }
-# }
 
 
 

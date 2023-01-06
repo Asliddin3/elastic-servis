@@ -11,10 +11,10 @@ import (
 	"strconv"
 	"sync"
 	"sync/atomic"
-	"github.com/Asliddin3/poll-servis/graph/model"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
+	"github.com/Asliddin3/poll-servis/graph/model"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -56,16 +56,16 @@ type ComplexityRoot struct {
 	}
 
 	Poll struct {
-		Choises   func(childComplexity int) int
-		ID        func(childComplexity int) int
-		Results   func(childComplexity int) int
-		Text      func(childComplexity int) int
-		UserEmail func(childComplexity int) int
+		Choises func(childComplexity int) int
+		Email   func(childComplexity int) int
+		ID      func(childComplexity int) int
+		Results func(childComplexity int) int
+		Text    func(childComplexity int) int
 	}
 
 	PollResult struct {
-		ChoiceID  func(childComplexity int) int
-		UserEmail func(childComplexity int) int
+		Choiceid func(childComplexity int) int
+		Email    func(childComplexity int) int
 	}
 
 	Query struct {
@@ -143,6 +143,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Poll.Choises(childComplexity), true
 
+	case "Poll.email":
+		if e.complexity.Poll.Email == nil {
+			break
+		}
+
+		return e.complexity.Poll.Email(childComplexity), true
+
 	case "Poll.id":
 		if e.complexity.Poll.ID == nil {
 			break
@@ -164,26 +171,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Poll.Text(childComplexity), true
 
-	case "Poll.userEmail":
-		if e.complexity.Poll.UserEmail == nil {
+	case "PollResult.choiceid":
+		if e.complexity.PollResult.Choiceid == nil {
 			break
 		}
 
-		return e.complexity.Poll.UserEmail(childComplexity), true
+		return e.complexity.PollResult.Choiceid(childComplexity), true
 
-	case "PollResult.choiceId":
-		if e.complexity.PollResult.ChoiceID == nil {
+	case "PollResult.email":
+		if e.complexity.PollResult.Email == nil {
 			break
 		}
 
-		return e.complexity.PollResult.ChoiceID(childComplexity), true
-
-	case "PollResult.userEmail":
-		if e.complexity.PollResult.UserEmail == nil {
-			break
-		}
-
-		return e.complexity.PollResult.UserEmail(childComplexity), true
+		return e.complexity.PollResult.Email(childComplexity), true
 
 	case "Query.poll":
 		if e.complexity.Query.Poll == nil {
@@ -300,7 +300,7 @@ func (ec *executionContext) field_Mutation_ChoiceFromPoll_args(ctx context.Conte
 	var arg0 *model.UserChoice
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalOUserChoice2ᚖtemplateᚋvoiceᚑservisᚋgraphᚋmodelᚐUserChoice(ctx, tmp)
+		arg0, err = ec.unmarshalOUserChoice2ᚖgithubᚗcomᚋAsliddin3ᚋpollᚑservisᚋgraphᚋmodelᚐUserChoice(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -315,7 +315,7 @@ func (ec *executionContext) field_Mutation_CreatePoll_args(ctx context.Context, 
 	var arg0 *model.NewPoll
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalONewPoll2ᚖtemplateᚋvoiceᚑservisᚋgraphᚋmodelᚐNewPoll(ctx, tmp)
+		arg0, err = ec.unmarshalONewPoll2ᚖgithubᚗcomᚋAsliddin3ᚋpollᚑservisᚋgraphᚋmodelᚐNewPoll(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -508,7 +508,7 @@ func (ec *executionContext) _Mutation_CreatePoll(ctx context.Context, field grap
 	}
 	res := resTmp.(*model.Poll)
 	fc.Result = res
-	return ec.marshalNPoll2ᚖtemplateᚋvoiceᚑservisᚋgraphᚋmodelᚐPoll(ctx, field.Selections, res)
+	return ec.marshalNPoll2ᚖgithubᚗcomᚋAsliddin3ᚋpollᚑservisᚋgraphᚋmodelᚐPoll(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_CreatePoll(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -521,8 +521,8 @@ func (ec *executionContext) fieldContext_Mutation_CreatePoll(ctx context.Context
 			switch field.Name {
 			case "id":
 				return ec.fieldContext_Poll_id(ctx, field)
-			case "userEmail":
-				return ec.fieldContext_Poll_userEmail(ctx, field)
+			case "email":
+				return ec.fieldContext_Poll_email(ctx, field)
 			case "text":
 				return ec.fieldContext_Poll_text(ctx, field)
 			case "choises":
@@ -575,7 +575,7 @@ func (ec *executionContext) _Mutation_ChoiceFromPoll(ctx context.Context, field 
 	}
 	res := resTmp.(*model.Poll)
 	fc.Result = res
-	return ec.marshalNPoll2ᚖtemplateᚋvoiceᚑservisᚋgraphᚋmodelᚐPoll(ctx, field.Selections, res)
+	return ec.marshalNPoll2ᚖgithubᚗcomᚋAsliddin3ᚋpollᚑservisᚋgraphᚋmodelᚐPoll(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_ChoiceFromPoll(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -588,8 +588,8 @@ func (ec *executionContext) fieldContext_Mutation_ChoiceFromPoll(ctx context.Con
 			switch field.Name {
 			case "id":
 				return ec.fieldContext_Poll_id(ctx, field)
-			case "userEmail":
-				return ec.fieldContext_Poll_userEmail(ctx, field)
+			case "email":
+				return ec.fieldContext_Poll_email(ctx, field)
 			case "text":
 				return ec.fieldContext_Poll_text(ctx, field)
 			case "choises":
@@ -658,8 +658,8 @@ func (ec *executionContext) fieldContext_Poll_id(ctx context.Context, field grap
 	return fc, nil
 }
 
-func (ec *executionContext) _Poll_userEmail(ctx context.Context, field graphql.CollectedField, obj *model.Poll) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Poll_userEmail(ctx, field)
+func (ec *executionContext) _Poll_email(ctx context.Context, field graphql.CollectedField, obj *model.Poll) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Poll_email(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -672,7 +672,7 @@ func (ec *executionContext) _Poll_userEmail(ctx context.Context, field graphql.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UserEmail, nil
+		return obj.Email, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -689,7 +689,7 @@ func (ec *executionContext) _Poll_userEmail(ctx context.Context, field graphql.C
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Poll_userEmail(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Poll_email(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Poll",
 		Field:      field,
@@ -774,7 +774,7 @@ func (ec *executionContext) _Poll_choises(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.([]*model.Choice)
 	fc.Result = res
-	return ec.marshalNChoice2ᚕᚖtemplateᚋvoiceᚑservisᚋgraphᚋmodelᚐChoiceᚄ(ctx, field.Selections, res)
+	return ec.marshalNChoice2ᚕᚖgithubᚗcomᚋAsliddin3ᚋpollᚑservisᚋgraphᚋmodelᚐChoiceᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Poll_choises(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -821,7 +821,7 @@ func (ec *executionContext) _Poll_results(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.([]*model.PollResult)
 	fc.Result = res
-	return ec.marshalOPollResult2ᚕᚖtemplateᚋvoiceᚑservisᚋgraphᚋmodelᚐPollResultᚄ(ctx, field.Selections, res)
+	return ec.marshalOPollResult2ᚕᚖgithubᚗcomᚋAsliddin3ᚋpollᚑservisᚋgraphᚋmodelᚐPollResultᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Poll_results(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -832,10 +832,10 @@ func (ec *executionContext) fieldContext_Poll_results(ctx context.Context, field
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "choiceId":
-				return ec.fieldContext_PollResult_choiceId(ctx, field)
-			case "userEmail":
-				return ec.fieldContext_PollResult_userEmail(ctx, field)
+			case "choiceid":
+				return ec.fieldContext_PollResult_choiceid(ctx, field)
+			case "email":
+				return ec.fieldContext_PollResult_email(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type PollResult", field.Name)
 		},
@@ -843,8 +843,8 @@ func (ec *executionContext) fieldContext_Poll_results(ctx context.Context, field
 	return fc, nil
 }
 
-func (ec *executionContext) _PollResult_choiceId(ctx context.Context, field graphql.CollectedField, obj *model.PollResult) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_PollResult_choiceId(ctx, field)
+func (ec *executionContext) _PollResult_choiceid(ctx context.Context, field graphql.CollectedField, obj *model.PollResult) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PollResult_choiceid(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -857,7 +857,7 @@ func (ec *executionContext) _PollResult_choiceId(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ChoiceID, nil
+		return obj.Choiceid, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -874,7 +874,7 @@ func (ec *executionContext) _PollResult_choiceId(ctx context.Context, field grap
 	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_PollResult_choiceId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_PollResult_choiceid(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "PollResult",
 		Field:      field,
@@ -887,8 +887,8 @@ func (ec *executionContext) fieldContext_PollResult_choiceId(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _PollResult_userEmail(ctx context.Context, field graphql.CollectedField, obj *model.PollResult) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_PollResult_userEmail(ctx, field)
+func (ec *executionContext) _PollResult_email(ctx context.Context, field graphql.CollectedField, obj *model.PollResult) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PollResult_email(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -901,7 +901,7 @@ func (ec *executionContext) _PollResult_userEmail(ctx context.Context, field gra
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UserEmail, nil
+		return obj.Email, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -918,7 +918,7 @@ func (ec *executionContext) _PollResult_userEmail(ctx context.Context, field gra
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_PollResult_userEmail(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_PollResult_email(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "PollResult",
 		Field:      field,
@@ -959,7 +959,7 @@ func (ec *executionContext) _Query_poll(ctx context.Context, field graphql.Colle
 	}
 	res := resTmp.(*model.Poll)
 	fc.Result = res
-	return ec.marshalNPoll2ᚖtemplateᚋvoiceᚑservisᚋgraphᚋmodelᚐPoll(ctx, field.Selections, res)
+	return ec.marshalNPoll2ᚖgithubᚗcomᚋAsliddin3ᚋpollᚑservisᚋgraphᚋmodelᚐPoll(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_poll(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -972,8 +972,8 @@ func (ec *executionContext) fieldContext_Query_poll(ctx context.Context, field g
 			switch field.Name {
 			case "id":
 				return ec.fieldContext_Poll_id(ctx, field)
-			case "userEmail":
-				return ec.fieldContext_Poll_userEmail(ctx, field)
+			case "email":
+				return ec.fieldContext_Poll_email(ctx, field)
 			case "text":
 				return ec.fieldContext_Poll_text(ctx, field)
 			case "choises":
@@ -1026,7 +1026,7 @@ func (ec *executionContext) _Query_polls(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.([]*model.Poll)
 	fc.Result = res
-	return ec.marshalNPoll2ᚕᚖtemplateᚋvoiceᚑservisᚋgraphᚋmodelᚐPollᚄ(ctx, field.Selections, res)
+	return ec.marshalNPoll2ᚕᚖgithubᚗcomᚋAsliddin3ᚋpollᚑservisᚋgraphᚋmodelᚐPollᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_polls(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1039,8 +1039,8 @@ func (ec *executionContext) fieldContext_Query_polls(ctx context.Context, field 
 			switch field.Name {
 			case "id":
 				return ec.fieldContext_Poll_id(ctx, field)
-			case "userEmail":
-				return ec.fieldContext_Poll_userEmail(ctx, field)
+			case "email":
+				return ec.fieldContext_Poll_email(ctx, field)
 			case "text":
 				return ec.fieldContext_Poll_text(ctx, field)
 			case "choises":
@@ -2963,21 +2963,13 @@ func (ec *executionContext) unmarshalInputNewChoice(ctx context.Context, obj int
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"id", "name"}
+	fieldsInOrder := [...]string{"name"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "id":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			it.ID, err = ec.unmarshalNID2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
 		case "name":
 			var err error
 
@@ -2999,7 +2991,7 @@ func (ec *executionContext) unmarshalInputNewPoll(ctx context.Context, obj inter
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"text", "userEmail", "choises"}
+	fieldsInOrder := [...]string{"text", "email", "choises"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -3014,11 +3006,11 @@ func (ec *executionContext) unmarshalInputNewPoll(ctx context.Context, obj inter
 			if err != nil {
 				return it, err
 			}
-		case "userEmail":
+		case "email":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userEmail"))
-			it.UserEmail, err = ec.unmarshalNString2string(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
+			it.Email, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -3026,7 +3018,7 @@ func (ec *executionContext) unmarshalInputNewPoll(ctx context.Context, obj inter
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("choises"))
-			it.Choises, err = ec.unmarshalNNewChoice2ᚕᚖtemplateᚋvoiceᚑservisᚋgraphᚋmodelᚐNewChoiceᚄ(ctx, v)
+			it.Choises, err = ec.unmarshalNNewChoice2ᚕᚖgithubᚗcomᚋAsliddin3ᚋpollᚑservisᚋgraphᚋmodelᚐNewChoiceᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -3188,9 +3180,9 @@ func (ec *executionContext) _Poll(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "userEmail":
+		case "email":
 
-			out.Values[i] = ec._Poll_userEmail(ctx, field, obj)
+			out.Values[i] = ec._Poll_email(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
 				invalids++
@@ -3234,16 +3226,16 @@ func (ec *executionContext) _PollResult(ctx context.Context, sel ast.SelectionSe
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("PollResult")
-		case "choiceId":
+		case "choiceid":
 
-			out.Values[i] = ec._PollResult_choiceId(ctx, field, obj)
+			out.Values[i] = ec._PollResult_choiceid(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "userEmail":
+		case "email":
 
-			out.Values[i] = ec._PollResult_userEmail(ctx, field, obj)
+			out.Values[i] = ec._PollResult_email(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
 				invalids++
@@ -3680,7 +3672,7 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalNChoice2ᚕᚖtemplateᚋvoiceᚑservisᚋgraphᚋmodelᚐChoiceᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Choice) graphql.Marshaler {
+func (ec *executionContext) marshalNChoice2ᚕᚖgithubᚗcomᚋAsliddin3ᚋpollᚑservisᚋgraphᚋmodelᚐChoiceᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Choice) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -3704,7 +3696,7 @@ func (ec *executionContext) marshalNChoice2ᚕᚖtemplateᚋvoiceᚑservisᚋgra
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNChoice2ᚖtemplateᚋvoiceᚑservisᚋgraphᚋmodelᚐChoice(ctx, sel, v[i])
+			ret[i] = ec.marshalNChoice2ᚖgithubᚗcomᚋAsliddin3ᚋpollᚑservisᚋgraphᚋmodelᚐChoice(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -3724,7 +3716,7 @@ func (ec *executionContext) marshalNChoice2ᚕᚖtemplateᚋvoiceᚑservisᚋgra
 	return ret
 }
 
-func (ec *executionContext) marshalNChoice2ᚖtemplateᚋvoiceᚑservisᚋgraphᚋmodelᚐChoice(ctx context.Context, sel ast.SelectionSet, v *model.Choice) graphql.Marshaler {
+func (ec *executionContext) marshalNChoice2ᚖgithubᚗcomᚋAsliddin3ᚋpollᚑservisᚋgraphᚋmodelᚐChoice(ctx context.Context, sel ast.SelectionSet, v *model.Choice) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -3749,7 +3741,7 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalNNewChoice2ᚕᚖtemplateᚋvoiceᚑservisᚋgraphᚋmodelᚐNewChoiceᚄ(ctx context.Context, v interface{}) ([]*model.NewChoice, error) {
+func (ec *executionContext) unmarshalNNewChoice2ᚕᚖgithubᚗcomᚋAsliddin3ᚋpollᚑservisᚋgraphᚋmodelᚐNewChoiceᚄ(ctx context.Context, v interface{}) ([]*model.NewChoice, error) {
 	var vSlice []interface{}
 	if v != nil {
 		vSlice = graphql.CoerceList(v)
@@ -3758,7 +3750,7 @@ func (ec *executionContext) unmarshalNNewChoice2ᚕᚖtemplateᚋvoiceᚑservis�
 	res := make([]*model.NewChoice, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNNewChoice2ᚖtemplateᚋvoiceᚑservisᚋgraphᚋmodelᚐNewChoice(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNNewChoice2ᚖgithubᚗcomᚋAsliddin3ᚋpollᚑservisᚋgraphᚋmodelᚐNewChoice(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -3766,16 +3758,16 @@ func (ec *executionContext) unmarshalNNewChoice2ᚕᚖtemplateᚋvoiceᚑservis�
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalNNewChoice2ᚖtemplateᚋvoiceᚑservisᚋgraphᚋmodelᚐNewChoice(ctx context.Context, v interface{}) (*model.NewChoice, error) {
+func (ec *executionContext) unmarshalNNewChoice2ᚖgithubᚗcomᚋAsliddin3ᚋpollᚑservisᚋgraphᚋmodelᚐNewChoice(ctx context.Context, v interface{}) (*model.NewChoice, error) {
 	res, err := ec.unmarshalInputNewChoice(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNPoll2templateᚋvoiceᚑservisᚋgraphᚋmodelᚐPoll(ctx context.Context, sel ast.SelectionSet, v model.Poll) graphql.Marshaler {
+func (ec *executionContext) marshalNPoll2githubᚗcomᚋAsliddin3ᚋpollᚑservisᚋgraphᚋmodelᚐPoll(ctx context.Context, sel ast.SelectionSet, v model.Poll) graphql.Marshaler {
 	return ec._Poll(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNPoll2ᚕᚖtemplateᚋvoiceᚑservisᚋgraphᚋmodelᚐPollᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Poll) graphql.Marshaler {
+func (ec *executionContext) marshalNPoll2ᚕᚖgithubᚗcomᚋAsliddin3ᚋpollᚑservisᚋgraphᚋmodelᚐPollᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Poll) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -3799,7 +3791,7 @@ func (ec *executionContext) marshalNPoll2ᚕᚖtemplateᚋvoiceᚑservisᚋgraph
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNPoll2ᚖtemplateᚋvoiceᚑservisᚋgraphᚋmodelᚐPoll(ctx, sel, v[i])
+			ret[i] = ec.marshalNPoll2ᚖgithubᚗcomᚋAsliddin3ᚋpollᚑservisᚋgraphᚋmodelᚐPoll(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -3819,7 +3811,7 @@ func (ec *executionContext) marshalNPoll2ᚕᚖtemplateᚋvoiceᚑservisᚋgraph
 	return ret
 }
 
-func (ec *executionContext) marshalNPoll2ᚖtemplateᚋvoiceᚑservisᚋgraphᚋmodelᚐPoll(ctx context.Context, sel ast.SelectionSet, v *model.Poll) graphql.Marshaler {
+func (ec *executionContext) marshalNPoll2ᚖgithubᚗcomᚋAsliddin3ᚋpollᚑservisᚋgraphᚋmodelᚐPoll(ctx context.Context, sel ast.SelectionSet, v *model.Poll) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -3829,7 +3821,7 @@ func (ec *executionContext) marshalNPoll2ᚖtemplateᚋvoiceᚑservisᚋgraphᚋ
 	return ec._Poll(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNPollResult2ᚖtemplateᚋvoiceᚑservisᚋgraphᚋmodelᚐPollResult(ctx context.Context, sel ast.SelectionSet, v *model.PollResult) graphql.Marshaler {
+func (ec *executionContext) marshalNPollResult2ᚖgithubᚗcomᚋAsliddin3ᚋpollᚑservisᚋgraphᚋmodelᚐPollResult(ctx context.Context, sel ast.SelectionSet, v *model.PollResult) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -4133,7 +4125,7 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
-func (ec *executionContext) unmarshalONewPoll2ᚖtemplateᚋvoiceᚑservisᚋgraphᚋmodelᚐNewPoll(ctx context.Context, v interface{}) (*model.NewPoll, error) {
+func (ec *executionContext) unmarshalONewPoll2ᚖgithubᚗcomᚋAsliddin3ᚋpollᚑservisᚋgraphᚋmodelᚐNewPoll(ctx context.Context, v interface{}) (*model.NewPoll, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -4141,7 +4133,7 @@ func (ec *executionContext) unmarshalONewPoll2ᚖtemplateᚋvoiceᚑservisᚋgra
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOPollResult2ᚕᚖtemplateᚋvoiceᚑservisᚋgraphᚋmodelᚐPollResultᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.PollResult) graphql.Marshaler {
+func (ec *executionContext) marshalOPollResult2ᚕᚖgithubᚗcomᚋAsliddin3ᚋpollᚑservisᚋgraphᚋmodelᚐPollResultᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.PollResult) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -4168,7 +4160,7 @@ func (ec *executionContext) marshalOPollResult2ᚕᚖtemplateᚋvoiceᚑservis�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNPollResult2ᚖtemplateᚋvoiceᚑservisᚋgraphᚋmodelᚐPollResult(ctx, sel, v[i])
+			ret[i] = ec.marshalNPollResult2ᚖgithubᚗcomᚋAsliddin3ᚋpollᚑservisᚋgraphᚋmodelᚐPollResult(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -4204,7 +4196,7 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 	return res
 }
 
-func (ec *executionContext) unmarshalOUserChoice2ᚖtemplateᚋvoiceᚑservisᚋgraphᚋmodelᚐUserChoice(ctx context.Context, v interface{}) (*model.UserChoice, error) {
+func (ec *executionContext) unmarshalOUserChoice2ᚖgithubᚗcomᚋAsliddin3ᚋpollᚑservisᚋgraphᚋmodelᚐUserChoice(ctx context.Context, v interface{}) (*model.UserChoice, error) {
 	if v == nil {
 		return nil, nil
 	}

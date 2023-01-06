@@ -22,13 +22,13 @@ func LoadConfig() *Config {
 	c := &Config{}
 	c.Environment = cast.ToString(getOrReturnDefault("ENVIRONMENT", "develop"))
 	c.LogLevel = cast.ToString(getOrReturnDefault("LOG_LEVEL", "debug"))
-	c.MONGOHost = cast.ToString(getOrReturnDefault("MONGO_HOST", "localhost"))
+	c.MONGOHost = cast.ToString(getOrReturnDefault("MONGO_HOST", "127.0.0.1"))
 	c.MONGOPort = cast.ToString(getOrReturnDefault("MONGO_PORT", 27017))
 	c.MONGODatabase = cast.ToString(getOrReturnDefault("MONGO_DATABASE", "polldb"))
 	c.MONGOUser = cast.ToString(getOrReturnDefault("MONGO_USER", "asliddin"))
 	c.MONGOPassword = cast.ToString(getOrReturnDefault("MONGO_PASSWORD", "compos1995"))
 	c.POLLServiceHost = cast.ToString(getOrReturnDefault("POLL_SERVICE_HOST", "localhost"))
-	c.POLLServicePort = cast.ToString(getOrReturnDefault("POLL_SERVICE_PORT", "8000"))
+	c.POLLServicePort = cast.ToString(getOrReturnDefault("POLL_SERVICE_PORT", "8070"))
 
 	return c
 }
