@@ -4,7 +4,7 @@ mutation CreatePoll {
   CreatePoll(
     input: {
       text:"Some question"
-      userEmail: "asliddindeh@mail.ru"
+      email: "asliddindeh@mail.ru"
       choises: [{
         name: "addd"
       }]
@@ -18,3 +18,54 @@ mutation CreatePoll {
   }
 }
 
+
+{
+  polls{
+    id
+    text
+    results{
+      email
+      choiceid
+    }
+    choises{
+      name
+      id
+    }
+  }
+}
+
+query GetPoll{
+  poll(pollId: "8c290929-8592-403c-8f88-95fe269adc61"){
+    id
+    text
+    results{
+      email
+      choiceid
+    }
+    choises{
+      name
+      id
+    }
+  }
+}
+
+
+mutation ChoiceFromPoll {
+  ChoiceFromPoll(
+    input: {
+     	pollId:"8c290929-8592-403c-8f88-95fe269adc61" 
+      userEmail: "asliddindeh@mail.ru"
+      choiceId:"a1ef4e72-bd38-449e-9873-36ed9d17827e"
+    }){
+    id
+    text
+    choises{
+      id
+      name
+    }
+    results{
+      choiceid
+      email
+    }
+  }
+}

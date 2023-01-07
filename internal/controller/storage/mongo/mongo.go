@@ -38,7 +38,7 @@ func (db *PollRepo) CreatePoll(pollReq *model.NewPoll) (*model.Poll, error) {
 		{Key: "email", Value: &pollReq.Email},
 		{Key: "text", Value: &pollReq.Text},
 		{Key: "choises", Value: &poll.Choises},
-		{Key: "results", Value: make(map[string]string)},
+		// {Key: "results", Value: []map[string]string{}},
 	})
 	fmt.Println("in createPoll mongo func", err)
 	poll.Text = pollReq.Text
@@ -75,7 +75,7 @@ func (db *PollRepo) ChoiceFromPoll(choiceReq *model.UserChoice) (*model.Poll, er
 	defer cancel()
 	var poll model.Poll
 	_, err := collection.UpdateOne(ctx, filterSearch, bson.D{
-		{Key: "$push", Value: bson.M{"resutls": bson.M{"choiceid": choiceReq.ChoiceID, "email": choiceReq.UserEmail}}},
+		{Key: "$push", Value: bson.M{"results": bson.M{"choiceid": choiceReq.ChoiceID, "email": choiceReq.UserEmail}}},
 		// update[0],
 		//  {Key: "$push", Value:bson.D{"results": bson.D{"choiceid", &choiceReq.UserEmail}}},
 	})
@@ -111,17 +111,24 @@ func (db *PollRepo) GetPolls() ([]*model.Poll, error) {
 	collection := db.Db.Database("poll_service").Collection("polls")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	poll := []*model.Poll{}
-	filter := bson.D{}
+	polls := []*model.Poll{}
+	filter := bson.D{{}}
+	// opts := options.Find()
+	// opts.SetSort(bson.D{{"duration", -1}})
 	res, err := collection.Find(ctx, filter)
+	fmt.Println("somer error here",err)
+	for res.Next(ctx) {
+		poll := &model.Poll{}
+		err = res.Decode(&poll)
+		if err != nil {
+			return nil, err
+		}
+		polls = append(polls, poll)
+	}
 	if err != nil {
 		return []*model.Poll{}, err
 	}
-	err = res.Decode(poll)
-	if err != nil {
-		return []*model.Poll{}, err
-	}
-	return poll, nil
+	return polls, nil
 }
 
 // func (db *db.DB) FindMovieById(id string) *model.Movie {

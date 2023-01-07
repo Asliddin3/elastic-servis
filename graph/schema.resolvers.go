@@ -6,6 +6,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/Asliddin3/poll-servis/graph/model"
 )
@@ -27,6 +28,7 @@ func (r *queryResolver) Poll(ctx context.Context, pollID string) (*model.Poll, e
 
 // Polls is the resolver for the polls field.
 func (r *queryResolver) Polls(ctx context.Context) ([]*model.Poll, error) {
+	fmt.Println("polls")
 	return r.Service.Storage.Poll().GetPolls()
 }
 
