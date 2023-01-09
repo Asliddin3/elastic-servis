@@ -2,7 +2,6 @@
 
 package model
 
-
 type Choice struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
@@ -18,6 +17,11 @@ type NewPoll struct {
 	Choises []*NewChoice `json:"choises"`
 }
 
+type NewPost struct {
+	Title string `json:"title"`
+	Body  string `json:"body"`
+}
+
 type Poll struct {
 	ID      string        `json:"id"`
 	Email   string        `json:"email"`
@@ -29,6 +33,18 @@ type Poll struct {
 type PollResult struct {
 	Choiceid string `json:"choiceid"`
 	Email    string `json:"email"`
+}
+
+type Post struct {
+	ID    int    `json:"id"`
+	Title string `json:"title"`
+	Body  string `json:"body"`
+}
+
+type UpdatedPost struct {
+	ID    int    `json:"id"`
+	Title string `json:"title"`
+	Body  string `json:"body"`
 }
 
 type UserChoice struct {

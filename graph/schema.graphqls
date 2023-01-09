@@ -14,6 +14,13 @@ type Poll {
   choises: [Choice!]!
   results: [PollResult!]
 }
+
+type Post{
+  id: Int!
+  title: String!
+  body: String!
+}
+
 type PollResult {
   choiceid: ID!
   email: String!
@@ -26,7 +33,14 @@ type Choice {
 type Query{
   poll(pollId: ID!):Poll!
   polls: [Poll!]!
+  post(postId: Int!):Post!
+  posts: [Post!]!
 }
+input NewPost{
+  title: String!
+  body: String!
+}
+
 input NewChoice {
   name: String!
 }
@@ -43,10 +57,16 @@ input UserChoice{
   userEmail: String!
 }
 
-
+input UpdatedPost{
+  id: Int!
+  title: String!
+  body: String!
+}
 
 
 type Mutation {
   CreatePoll(input: NewPoll): Poll!
   ChoiceFromPoll(input: UserChoice): Poll!
+  CreatePost(input: NewPost): Post!
+  UpdatePost(input: UpdatedPost): Post!
 }

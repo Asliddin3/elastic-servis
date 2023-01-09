@@ -4,17 +4,19 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
-	"github.com/Asliddin3/poll-servis/config"
+	config "github.com/Asliddin3/elastic-servis/configs"
 
-	"github.com/Asliddin3/poll-servis/graph"
+	"github.com/Asliddin3/elastic-servis/graph"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 
-	"github.com/Asliddin3/poll-servis/pkg/db"
+	"github.com/Asliddin3/elastic-servis/pkg/db"
 
 	"github.com/rs/cors"
+	"github.com/rs/zerolog"
 )
 
 func Run(cfg *config.Config) {
@@ -30,8 +32,12 @@ func Run(cfg *config.Config) {
 		AllowedOrigins:   []string{fmt.Sprintf("http://%s:3000", cfg)},
 		AllowCredentials: true,
 	})
+	logger := zerolog.New(os.Stderr).With().Timestamp().Logger()
+	cfg.Logger = logger
+	logger.Info().Interface("config", cfg).Msg("config:")
+	graphResolver := graph.Init(cfg)
 	// pollService := service.NewPollService(l, mongoConnect)
-	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{Service: graph.Connect(cfg)}}))
+	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{Service: graphResolver}}))
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", c.Handler(srv))
 

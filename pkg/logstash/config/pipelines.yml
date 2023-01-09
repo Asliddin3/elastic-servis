@@ -1,0 +1,4 @@
+- pipeline.id: sync-posts-pipeline
+  path.config: "/pkg/logstash/config/pipeline/sync-posts.conf"
+- pipeline.id: sync-servis-logs
+  path.config: "/pkg/logstash/config/pipelines.yml"

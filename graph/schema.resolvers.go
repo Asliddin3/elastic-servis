@@ -8,7 +8,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Asliddin3/poll-servis/graph/model"
+	"github.com/Asliddin3/elastic-servis/graph/model"
 )
 
 // CreatePoll is the resolver for the CreatePoll field.
@@ -21,6 +21,16 @@ func (r *mutationResolver) ChoiceFromPoll(ctx context.Context, input *model.User
 	return r.Service.Storage.Poll().ChoiceFromPoll(input)
 }
 
+// CreatePost is the resolver for the CreatePost field.
+func (r *mutationResolver) CreatePost(ctx context.Context, input *model.NewPost) (*model.Post, error) {
+	return r.Service.Storage.Post().CreatePost(input)
+}
+
+// UpdatePost is the resolver for the UpdatePost field.
+func (r *mutationResolver) UpdatePost(ctx context.Context, input *model.UpdatedPost) (*model.Post, error) {
+	return r.Service.Storage.Post().UpdatePost(input)
+}
+
 // Poll is the resolver for the poll field.
 func (r *queryResolver) Poll(ctx context.Context, pollID string) (*model.Poll, error) {
 	return r.Service.Storage.Poll().GetPoll(&pollID)
@@ -30,6 +40,16 @@ func (r *queryResolver) Poll(ctx context.Context, pollID string) (*model.Poll, e
 func (r *queryResolver) Polls(ctx context.Context) ([]*model.Poll, error) {
 	fmt.Println("polls")
 	return r.Service.Storage.Poll().GetPolls()
+}
+
+// Post is the resolver for the post field.
+func (r *queryResolver) Post(ctx context.Context, postID int) (*model.Post, error) {
+	return r.Service.Storage.Post().GetPost(postID)
+}
+
+// Posts is the resolver for the posts field.
+func (r *queryResolver) Posts(ctx context.Context) ([]*model.Post, error) {
+	return r.Service.Storage.Post().GetPosts()
 }
 
 // Mutation returns MutationResolver implementation.

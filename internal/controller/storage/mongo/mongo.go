@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Asliddin3/poll-servis/graph/model"
+	"github.com/Asliddin3/elastic-servis/graph/model"
 
 	// "github.com/Asliddin3/pkg/db"
 	"github.com/google/uuid"
@@ -14,15 +14,15 @@ import (
 )
 
 type PollRepo struct {
-	Db *mongo.Client
+	mongoDb *mongo.Client
 }
 
 func NewPollRepo(db *mongo.Client) *PollRepo {
-	return &PollRepo{Db: db}
+	return &PollRepo{mongoDb: db}
 }
 
 func (db *PollRepo) CreatePoll(pollReq *model.NewPoll) (*model.Poll, error) {
-	collection := db.Db.Database("poll_service").Collection("polls")
+	collection := db.mongoDb.Database("poll_service").Collection("polls")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	poll := model.Poll{}
@@ -64,7 +64,7 @@ type Choises struct {
 }
 
 func (db *PollRepo) ChoiceFromPoll(choiceReq *model.UserChoice) (*model.Poll, error) {
-	collection := db.Db.Database("poll_service").Collection("polls")
+	collection := db.mongoDb.Database("poll_service").Collection("polls")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	params := make(map[string]string)
 	params["choiceid"] = choiceReq.ChoiceID
@@ -95,7 +95,7 @@ func (db *PollRepo) ChoiceFromPoll(choiceReq *model.UserChoice) (*model.Poll, er
 	return &poll, nil
 }
 func (db *PollRepo) GetPoll(id *string) (*model.Poll, error) {
-	collection := db.Db.Database("poll_service").Collection("polls")
+	collection := db.mongoDb.Database("poll_service").Collection("polls")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	poll := &model.Poll{}
@@ -108,7 +108,7 @@ func (db *PollRepo) GetPoll(id *string) (*model.Poll, error) {
 }
 
 func (db *PollRepo) GetPolls() ([]*model.Poll, error) {
-	collection := db.Db.Database("poll_service").Collection("polls")
+	collection := db.mongoDb.Database("poll_service").Collection("polls")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	polls := []*model.Poll{}
@@ -116,7 +116,7 @@ func (db *PollRepo) GetPolls() ([]*model.Poll, error) {
 	// opts := options.Find()
 	// opts.SetSort(bson.D{{"duration", -1}})
 	res, err := collection.Find(ctx, filter)
-	fmt.Println("somer error here",err)
+	fmt.Println("somer error here", err)
 	for res.Next(ctx) {
 		poll := &model.Poll{}
 		err = res.Decode(&poll)

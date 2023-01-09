@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/Asliddin3/poll-servis/config"
-	"github.com/Asliddin3/poll-servis/internal/app"
+	_ "github.com/99designs/gqlgen"
+	config "github.com/Asliddin3/elastic-servis/configs"
+	"github.com/Asliddin3/elastic-servis/internal/app"
 )
 
 func main() {
